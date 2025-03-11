@@ -1,16 +1,46 @@
 import Scanner from "@codeea/scanner";
-import pgp from "pg-promise";
+import { Database } from "./database";
+
+const scanner = new Scanner();
+const database = new Database();
 
 async function main() {
-  const scanner = new Scanner();
+  // CRUD
+  // (C)reate - Criar -> INSERT
+  // (R)etrieve - Obter -> SELECT
+  // (U)pdate - Atualizar -> UPDATE WITH WHERE
+  // (D)elete - Excluir -> DELETE WITH WHERE
 
-  // Criar um objeto de conexão com o banco
-  const connectionString =
-    "postgres://postgres:password@localhost:5432/matriculas_db";
+  let comando = 0;
+  do {
+    // 10 - Tabela Alunos
+    // 20 - Tabela Instrutores
+    // 30 - Tabela Cursos
+    // 40 - Tabela Turmas
+    // 50 - Tabela Matriculas
+    console.log(`
+      Comandos Disponíveis:
+      10 - Criar Aluno
+      11 - Listar Alunos
+      12 - Atualizar Dados Aluno
+      13 - Excluir Aluno\n
+      `);
+    comando = await scanner.questionInt("Informe o comando:");
+    switch (comando) {
+      case 10:
+        await createAluno();
+        break;
 
-  const connection = pgp()(connectionString);
+      default:
+        break;
+    }
+  } while (comando > 0);
+}
+
+async function createAluno() {
   try {
     // Usando o scanner, vamos obter os dados do aluno para inserir
+
     // ENTRADA
     console.log("A seguir, informe os dados do aluno: \n");
     const nome = await scanner.question("Nome Completo: ");
@@ -37,7 +67,7 @@ async function main() {
     const [dia, mes, ano] = dataNascimento.split("/");
     const dataNascimentoISO = new Date(`${mes}/${dia}/${ano}`).toUTCString();
     // Insere os dados no banco
-    await connection.query(queryInsertAlunos, [
+    await database.query(queryInsertAlunos, [
       nome,
       dataNascimentoISO,
       cpf,
@@ -51,7 +81,10 @@ async function main() {
 
     // SAÍDA
     // Busca os dados no banco
-    const results = await connection.query("select id, nome, cpf from alunos");
+    const results = await database.query(
+      "select id, nome, cpf from alunos",
+      []
+    );
 
     // Imprime os dados
     console.log(results);
@@ -59,10 +92,10 @@ async function main() {
     // Imprime o erro
     console.log(error);
   }
-
-  scanner.close();
 }
 
 (async () => {
   await main();
+  scanner.close();
+  await database.closeConnection();
 })();
