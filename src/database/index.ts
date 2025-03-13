@@ -19,6 +19,10 @@ export class Database {
     return this.connection.query(statement, params);
   }
 
+  one(statement: string, params: any) {
+    return this.connection.one(statement, params);
+  }
+
   closeConnection(): Promise<any> {
     return this.connection.$pool.end();
   }
