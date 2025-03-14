@@ -18,6 +18,10 @@
   },
   "dependencies": {
     "@codeea/scanner": "^1.0.3",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
     "pg-promise": "^11.10.2"
   }
 }
