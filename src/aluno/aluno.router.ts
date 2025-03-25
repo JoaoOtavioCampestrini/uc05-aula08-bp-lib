@@ -1,21 +1,12 @@
 import express, { Router } from "express";
 import { AlunoController } from "./aluno.controller";
-import { AlunoRepository } from "./aluno.repository";
-import { AlunoService } from "./aluno.service";
 
-export class AlunoRoutes {
-  private database: any;
+export class AlunoRouter {
   private router: Router;
-
-  private alunoRepository: AlunoRepository;
-  private alunoService: AlunoService;
   private alunoController: AlunoController;
 
-  constructor(database: any) {
-    this.database = database;
-    this.alunoRepository = new AlunoRepository(this.database);
-    this.alunoService = new AlunoService(this.alunoRepository);
-    this.alunoController = new AlunoController(this.alunoService);
+  constructor(alunoController: AlunoController) {
+    this.alunoController = alunoController;
     this.router = express.Router();
     this.configureRoutes();
   }

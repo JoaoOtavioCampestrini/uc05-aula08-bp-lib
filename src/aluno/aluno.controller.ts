@@ -1,6 +1,9 @@
-import { Aluno } from "../shared/model/aluno";
+import { Aluno } from "../shared/model/aluno.model";
 import { AlunoService } from "./aluno.service";
 import { Request, Response } from "express";
+import { CreateAlunoResponseDto } from "./dto/create-aluno-response.dto";
+import { ErrorResponseDto } from "../shared/error/dto/error.dto";
+import { CreateAlunoRequestDto } from "./dto/create-aluno-request.dto";
 
 export class AlunoController {
   private service: AlunoService;
@@ -10,7 +13,10 @@ export class AlunoController {
   }
 
   // CRUD - (C)reate
-  async createAluno(req: Request<{}, {}, Aluno>, res: Response) {
+  async createAluno(
+    req: Request<{}, {}, CreateAlunoRequestDto>,
+    res: Response<CreateAlunoResponseDto | ErrorResponseDto>
+  ) {
     try {
       // ENTRADA
       const aluno = req.body;
@@ -21,7 +27,7 @@ export class AlunoController {
     } catch (error) {
       // Imprime o erro
       console.log("Error - AlunoController>createAluno", error);
-      res.status(500).send({ error: true, message: error });
+      res.status(500).send({ error: true, message: error as string });
     }
   }
 
@@ -148,8 +154,6 @@ export class AlunoController {
         res.status(400).send({ error: true, message: "Informe um ID válido" });
         return;
       }
-      // Pegar os dados do aluno
-      const aluno = req.body;
       // Chama o service para atualizar o aluno
       await this.service.deleteAluno(alunoId);
       res.status(200).send();

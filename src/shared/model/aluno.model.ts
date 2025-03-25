@@ -9,4 +9,4 @@ export type Aluno = {
   escolaridade: string;
   renda: number;
   pcd: boolean;
-}
+};
